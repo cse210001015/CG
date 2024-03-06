@@ -5,14 +5,48 @@ using namespace std;
 
 const int WINDOW_POSITION[2] = {0, 0};
 int WINDOW_SIZE[2];
-const char* diagramName = "DDA Line Drawing";
-const int STARTS[3][2] = {{200, 200}, {200, 200}, {200, 200}};
-const int ENDS[3][2] = {{1000, 1050}, {1000, 1000}, {1000, 950}};
-const int NUM_LINES = 3;
+const char* diagramName = "Bresenham Circle Drawing";
+const int xc = 500;
+const int yc = 500;
+const int rad = 100;
+
+void putPoints(int xc, int yc, int x, int y)
+{
+    glVertex2f(xc - x, yc - y);
+    glVertex2f(xc - x, yc + y);
+    glVertex2f(xc + x, yc - y);
+    glVertex2f(xc + x, yc + y);
+    glVertex2f(xc - y, yc - x);
+    glVertex2f(xc - y, yc + x);
+    glVertex2f(xc + y, yc - x);
+    glVertex2f(xc + y, yc + x);
+}
+
+void drawCircle(int xc, int yc, int rad)
+{
+    glBegin(GL_POINTS);
+    int x = 0, y = rad;
+    int param = 3 - 2*rad;
+
+    glVertex2f(xc, yc + rad);
+    glVertex2f(xc, yc - rad);
+    glVertex2f(xc + rad, yc);
+    glVertex2f(xc - rad, yc);
+    while(x < y)
+    {
+        if(param < 0)      param += 4*x + 6;
+        else               param += 4*(x - y) + 10, y--;
+        x++;
+        putPoints(xc, yc, x, y);      
+    }
+    glEnd();
+}
 
 void displayMe(void)
 {
-    
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawCircle(xc, yc, rad);
+    glFlush();
 }
 
 int main(int argc, char** argv)
